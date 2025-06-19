@@ -3,7 +3,7 @@ import PokemonCard from "./PokemonCard";
 
 export default function PokemonsList() {
     const [pokemons, setPokemons] = useState(undefined);
-    const [selectedPokemon, setSelectedPokemon] = useState(null);
+    const [selectedPokemon, setSelectedPokemon] = useState(undefined);
     const [error, setError] = useState(null);
     const [catched, setCatched] = useState(() => {
         // Initialize from localStorage
@@ -17,7 +17,11 @@ export default function PokemonsList() {
         // Fetch the list of Pokemons from the PokeAPI
         fetch("https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0")
         .then((response) => response.json())
-        .then((data) => setPokemons(data));
+        .then((data) => setPokemons(data))
+        .catch((error) => {
+            setError(error);
+            console.error("Error fetching Pokemons list:", error);
+        });;
     }, []);
 
     useEffect(() => {
@@ -86,7 +90,7 @@ export default function PokemonsList() {
                         <div>Check the checkbox to mark it as catched</div>
                         <ul >
                             {pokemons.results.map((pokemon, index) => (
-                                <li key={index} style={{ 
+                                <li key={pokemon.name} style={{ 
                                     display: "flex",
                                     flexDirection: "row",
                                     alignItems: "center",
