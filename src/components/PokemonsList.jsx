@@ -1,58 +1,111 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import PokemonCard from "./PokemonCard";
 
 export default function PokemonsList() {
-    const [data, setData] = useState(undefined);
+    const [pokemons, setPokemons] = useState(undefined);
     const [selectedPokemon, setSelectedPokemon] = useState(null);
     const [error, setError] = useState(null);
-
-    const pokemonImageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
-
+    const [catched, setCatched] = useState(() => {
+        // Initialize from localStorage
+        const saved = localStorage.getItem("catchedPokemons");
+        console.log(saved);
+        console.log(JSON.parse(saved));
+        return saved ? JSON.parse(saved) : [];
+    });
+    
     useEffect(() => {
-        fetch("https://pokeapi.co/api/v2/pokemon?limit=10&offset=0")
+        // Fetch the list of Pokemons from the PokeAPI
+        fetch("https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0")
         .then((response) => response.json())
-        .then((data) => setData(data));
+        .then((data) => setPokemons(data));
     }, []);
 
-// Test if selectedPokemon state updates:
-//   useEffect(() => {
-//     console.log("Selected Pokemon's object in state:", selectedPokemon);
-//   }, [selectedPokemon]);
-  
+    useEffect(() => {
+        // When pokemon is catched update the list of catched pokemons in the localStorage
+        localStorage.setItem("catchedPokemons", JSON.stringify(catched));
+    }, [catched]);
+    
+    const pokemonImageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+
     function showPokemon(index) {
-        console.log("Selected Pokemon's index:", index);
-        // Fetch the details of the selected Pokemon
+        // Fetch the details of the selected Pokemon and update its state which will trigger the PokemonCard component to re-render with the new data
         fetch(`https://pokeapi.co/api/v2/pokemon/${index}`)
         .then((response) => response.json())
         .then((data) => {
             setSelectedPokemon(data);
         })
-        .catch((error) => setError(error));
+        .catch((error) => {
+            setError(error)
+            console.error("Error fetching Pokemon details:", error)
+        });
+    }
+
+    function isCatched(pokemon) {
+        // Check if the pokemon is saved in localStorage
+        return catched.includes(pokemon.name);
+    }
+
+    function handleCatchChange(pokemon) {
+        // Add or remove the pokemon from local storage
+        if (isCatched(pokemon)) {
+            setCatched(catched.filter(name => name !== pokemon.name));
+        } else {
+            setCatched([...catched, pokemon.name]);
+        }
     }
 
   return (
-    <>
-        <div>
-            <p>Pokemons' list :</p>
-            {data && data.results && (
-                <div>
-                    <ul>
-                        {data.results.map((pokemon, index) => (
-                            <li key={index} style={{ 
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                            }}>
-                                <span>{pokemon.name}</span>
-                                <img src={`${pokemonImageUrl}${index+1}.png`} alt={pokemon.name} />
-                                <button onClick={() => showPokemon(index+1)}>Show more details</button>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+    <div style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyItems: "center",
+        alignItems: "center",
+        width: "100vw",
+        height: "100%",
+        backgroundColor: "black",}}
+    >
+        <header style={{
+            textAlign: "center",
+            padding: "20px",
+            borderRadius: "10px",
+            marginBottom: "20px"
+        }}>
+            <h1>PokeDEX</h1>
+            <h2>Gotta Catch 'Em All</h2>
+        </header>
+
+        <div style={{
+            display: "flex",
+            flexDirection: "row"
+            }}
+        >
+            <div>
+                {pokemons && pokemons.results && (
+                    <div>
+                        <div>Click on the pokemon name to see more details</div>
+                        <div>Check the checkbox to mark it as catched</div>
+                        <ul >
+                            {pokemons.results.map((pokemon, index) => (
+                                <li key={index} style={{ 
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                }}>
+                                    <span>{pokemon.name}</span>
+                                    <img src={`${pokemonImageUrl}${index+1}.png`} alt={pokemon.name} onClick={() => showPokemon(index+1)} />
+                                    <input
+                                        type="checkbox"
+                                        checked={isCatched(pokemon)}
+                                        onChange={() => handleCatchChange(pokemon)}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
+            {selectedPokemon && <PokemonCard selectedPokemon={selectedPokemon} />}
         </div>
-        {selectedPokemon && <PokemonCard selectedPokemon={selectedPokemon} />}
-    </>
+    </div>
   );
 }
