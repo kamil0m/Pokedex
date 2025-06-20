@@ -61,7 +61,7 @@ export default function Pokedex() {
 
   return (
     <div className="flex items-center justify-center min-h-screen min-w-screen bg-gray-900">
-        <div className="flex flex-col md:flex-row bg-red-600 rounded-lg shadow-2xl p-4 space-x-2  w-screen h-screen max-w-[90vw] max-h-[100vh] md:max-h-[80vh] space-y-4">
+        <div className="flex flex-col md:flex-row bg-red-600 rounded-lg shadow-2xl p-4 space-x-2 w-screen h-screen max-w-[90vw] max-h-[100vh] md:max-h-[80vh] lg:max-w-[70vw] space-y-4">
 
             {/*  Left/Top Panel  */}
             <div className="w-full h-1/2 md:h-full md:w-1/2 relative bg-red-500 rounded-lg p-3 flex flex-col space-y-2">
@@ -88,7 +88,7 @@ export default function Pokedex() {
                                                 {pokemons.results.map((pokemon, index) => (
                                                     <li key={pokemon.name} className="flex flex-row items-center" >
                                                         <img src={`${pokemonImageUrl}${index+1}.png`} alt={pokemon.name} onClick={() => showPokemon(index+1)} className="h-[40px] lg:h-[60px] lg:pr-[3rem] cursor-pointer" />
-                                                        <span className="min-w-[18rem] cursor-pointer" onClick={() => showPokemon(index+1)}>{pokemon.name}</span>
+                                                        <span className="min-w-[18rem] cursor-pointer lg:text-[1.5rem]" onClick={() => showPokemon(index+1)}>{pokemon.name}</span>
                                                         <input
                                                             className="appearance-none w-6 h-6 rounded-full border-2 border-gray-700 bg-green-400 checked:bg-purple-600 checked:border-purple-800 shadow-inner focus:outline-none transition duration-300 cursor-pointer"
                                                             type="checkbox"
@@ -116,14 +116,16 @@ export default function Pokedex() {
                         </div>
                 </div>
                 {/*  D-pad  */}
-                <div className="w-16 h-16 bg-black rounded-md flex flex-col items-center justify-center">
-                    <div className="w-2 h-6 bg-gray-600"></div>
-                    <div className="flex">
-                    <div className="w-6 h-2 bg-gray-600"></div>
-                    <div className="w-2 h-2"></div>
-                    <div className="w-6 h-2 bg-gray-600"></div>
+                <div className="h-full flex items-end">
+                    <div className="hidden md:flex flex-col items-center justify-center w-32 h-32 bg-black rounded-md">
+                        <div className="w-4 h-12 bg-gray-600"></div>
+                        <div className="flex">
+                        <div className="w-12 h-4 bg-gray-600"></div>
+                        <div className="w-4 h-4"></div>
+                        <div className="w-12 h-4 bg-gray-600"></div>
+                        </div>
+                        <div className="w-4 h-12 bg-gray-600"></div>
                     </div>
-                    <div className="w-2 h-6 bg-gray-600"></div>
                 </div>
             
             </div>
@@ -141,7 +143,7 @@ export default function Pokedex() {
 
                 </div>
                 {/*  Blue button grid  */}
-                <div className="grid grid-cols-4 gap-1 h-1/6">
+                <div className="hidden md:grid grid-cols-4 gap-1 h-1/6">
                     <div className="bg-blue-400 h-full"></div>
                     <div className="bg-blue-400 h-full"></div>
                     <div className="bg-blue-400 h-full"></div>
