@@ -1,28 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import PokemonCard from "./PokemonCard"
 import logo from "../assets/logo.png"
+import axios from 'axios';
 
 export default function Pokedex() {
     const [pokemons, setPokemons] = useState(undefined);
+    const [loading, setLoading] = useState(false);
     const [selectedPokemon, setSelectedPokemon] = useState(undefined);
-    const [error, setError] = useState(null);
     const [catched, setCatched] = useState(() => {
         // Initialize from localStorage
         const saved = localStorage.getItem("catchedPokemons");
-        console.log(saved);
-        console.log(JSON.parse(saved));
         return saved ? JSON.parse(saved) : [];
     });
-    
+
     useEffect(() => {
         // Fetch the list of Pokemons from the PokeAPI
-        fetch("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
-        .then((response) => response.json())
-        .then((data) => setPokemons(data))
-        .catch((error) => {
-            setError(error);
-            console.error("Error fetching Pokemons list:", error);
-        });;
+        setLoading(true);
+        axios.get("https://pokeapi.co/api/v2/pokemon?limit=1000&offset=0")
+            .then((response) => {
+                setPokemons(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching Pokemons list:", error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, []);
 
     useEffect(() => {
@@ -34,19 +37,16 @@ export default function Pokedex() {
 
     function showPokemon(index) {
         // Fetch the details of the selected Pokemon and update its state which will trigger the PokemonCard component to re-render with the new data
-        fetch(`https://pokeapi.co/api/v2/pokemon/${index}`)
-        .then((response) => response.json())
-        .then((data) => {
-            setSelectedPokemon(data);
+        axios.get(`https://pokeapi.co/api/v2/pokemon/${index}`)
+        .then((response) => {
+           setSelectedPokemon(response.data);
         })
         .catch((error) => {
-            setError(error)
-            console.error("Error fetching Pokemon details:", error)
+           console.error("Error fetching Pokemon details:", error);
         });
     }
 
     function isCatched(pokemon) {
-        // Check if the pokemon is saved in localStorage
         return catched.includes(pokemon.name);
     }
 
@@ -78,12 +78,12 @@ export default function Pokedex() {
                     <div className="bg-black h-full flex items-center justify-center overflow-hidden p-2">
 
                         {
-                        // < PokemonsList />
                             <div className="flex flex-col items-start content-center w-full h-full text-white overflow-y-auto overflow-x-hidden" >
-                                <div>
+                                <div className="whitespace-nowrap w-full">
+                                    <div className="inline-block animate-marquee">Click on the pokemon or flag it purple as caught. Click on the pokemon or flag it purple as caught. Click on the pokemon or flag it purple as caught.</div>
+                                    {loading && (<div>Loading...</div>)}
                                     {pokemons && pokemons.results && (
-                                        <div className="whitespace-nowrap w-full">
-                                            <div className="inline-block animate-marquee">Click on the pokemon or flag it purple as caught. Click on the pokemon or flag it purple as caught. Click on the pokemon or flag it purple as caught.</div>
+                                        <div >
                                             <ul >
                                                 {pokemons.results.map((pokemon, index) => (
                                                     <li key={pokemon.name} className="flex flex-row items-center" >
@@ -109,7 +109,7 @@ export default function Pokedex() {
                 </div>
                 {/*  Controls  */}
                 <div className="flex items-center justify-between px-1">
-                    <div className="w-4 h-4 bg-black rounded-full"></div>
+                    <div className="w-8 h-8 bg-black rounded-full"></div>
                     <div className="w-16 h-4 bg-gray-400 rounded"></div>
                     <div className="flex w-50 h-10 bg-green-400 mt-2 items-center justify-center">
                         <span className="text-black animate-pulse">battery low!</span>
