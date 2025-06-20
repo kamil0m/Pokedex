@@ -3,15 +3,26 @@ import axios from "axios";
 
 export default function PokemonCard({selectedPokemon}) {
     const [pokemon, setPokemon] = useState(selectedPokemon);
+    // const [typeImages, setTypeImages] = useState([]);
     
     useEffect(() => {
         setPokemon(selectedPokemon);
     },[selectedPokemon]);
 
+    // useEffect(() => {
+    //     if (pokemon) {
+    //         // Fetch type images for the selected Pokemon
+    //         pokemon.types.map((type) => {
+    //             fetchTypeImage(type.type.url)
+                        
+    //         })
+    //     }
+    // }, [pokemon]);
+
     // async function fetchTypeImage(typeUrl) {
     //     // Fetch the type image from the provided URL
     //     const imageUrl = await axios.get(typeUrl)
-    //         .then(response => return response.data.sprites['generation-iii']['firered-leafgreen'].name_icon)
+    //         .then(response => setTypeImages((prev) => {[...prev, response.data.sprites['generation-iii']['firered-leafgreen'].name_icon]}))
     //         .catch(error => {
     //             console.error("Error fetching type image:", error);
     //             return "";
@@ -20,7 +31,7 @@ export default function PokemonCard({selectedPokemon}) {
     // }
 
   return (
-    <div className="h-full">
+    <div className="h-full overflow-y-auto">
         {pokemon && (
             <div className="flex flex-col h-full" >
                 <h2 className="text-3xl">{pokemon.name}</h2>
