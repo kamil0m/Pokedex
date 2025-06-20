@@ -75,7 +75,7 @@ export default function Pokedex() {
                 </div>
                 {/*  Screen  */}
                 <div className="bg-white p-5 rounded max-h-2/3">
-                    <div className="bg-black h-full flex items-center justify-center xoverflow-hidden p-2">
+                    <div className="bg-black h-full flex items-center justify-center p-2">
 
                         {
                             <div className="flex flex-col items-start content-center w-full h-full text-white overflow-y-auto overflow-x-hidden" >
