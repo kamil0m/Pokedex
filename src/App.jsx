@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import PokemonsList from './components/PokemonsList.jsx'
+import Pokedex from './components/Pokedex.jsx'
 
 function App() {
-  // const [count, setCount] = useState(0)
 
   return (
     <>
-      < PokemonsList />
+      <Pokedex />
     </>
   )
 }

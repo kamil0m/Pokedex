@@ -62,7 +62,18 @@ export default function PokemonsList() {
 
   return (
     
-    <div className="flex flex-col items-start content-center w-full h-full text-white overflow-y-auto" >
+    <div className="flex flex-col items-center content-center w-[100vw] h-[100%] bg-white" >
+        <header className="" 
+        // style={{
+        //     textAlign: "center",
+        //     padding: "20px",
+        //     borderRadius: "10px",
+        //     marginBottom: "20px"
+        // }}
+        >
+            <h1>PokeDEX</h1>
+            <h2>Gotta Catch 'Em All</h2>
+        </header>
 
         <div style={{
             display: "flex",
@@ -76,9 +87,13 @@ export default function PokemonsList() {
                         <div>Check the checkbox to mark it as catched</div>
                         <ul >
                             {pokemons.results.map((pokemon, index) => (
-                                <li key={pokemon.name} className="flex flex-row items-center" >
-                                    <img src={`${pokemonImageUrl}${index+1}.png`} alt={pokemon.name} onClick={() => showPokemon(index+1)} className="h-[40px] " />
+                                <li key={pokemon.name} style={{ 
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                }}>
                                     <span>{pokemon.name}</span>
+                                    <img src={`${pokemonImageUrl}${index+1}.png`} alt={pokemon.name} onClick={() => showPokemon(index+1)} />
                                     <input
                                         type="checkbox"
                                         checked={isCatched(pokemon)}
